@@ -1,0 +1,31 @@
+# Python build and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local research data and output (not part of the public Skill)
+private/
+local-notes/
+experiments/
+datasets/
+data/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Built release archives
+*.zip
+*.tar.gz

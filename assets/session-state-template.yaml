@@ -1,0 +1,26 @@
+project: ""
+paper_id: ""
+mode: deep  # quick | deep | reproduce | stage
+stage: "00"
+inputs:
+  paper: ""
+  supplement: ""
+  repository: ""
+  commit: ""
+  config: ""
+  domain: ""
+  target: ""
+  prediction_origin: "t"
+  lookback_L: null
+  horizon_H: null
+  channels_C: null
+completed_stages: []
+evidence:
+  P: []
+  C_static: []
+  C_run: []
+  R: []
+  I: []
+  U: []
+critical_questions: []
+next_action: ""

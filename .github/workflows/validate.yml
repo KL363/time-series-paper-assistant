@@ -1,0 +1,20 @@
+name: Validate Agent Skill
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install validator dependency
+        run: python -m pip install pyyaml
+      - name: Validate Skill structure
+        run: python scripts/validate_skill.py .
+      - name: Compile utility scripts
+        run: python -m compileall -q scripts
