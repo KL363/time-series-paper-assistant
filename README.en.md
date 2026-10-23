@@ -1,48 +1,65 @@
-# Time-Series Paper Auditor
+# lingerskill
 
 [中文](README.md) | English
 
-**An open-source Agent Skill for auditing deep-learning time-series forecasting papers, from data pipelines and tensor shapes to paper–code alignment, novelty tracing, experiment review, and testable research hypotheses.**
+**A paper-reading skill for understanding model architecture, data processing, module design and training in deep-learning time-series forecasting papers, with precise pointers back to the paper.**
 
-This is not a generic paper summarizer. The goal is to make the technical analysis **traceable, reproducible, and evidence-aware**.
+## Explicit invocation
+
+Provide a paper PDF or accessible link, then ask:
+
+```text
+Use lingerskill to explain this paper.
+Focus on its architecture, data flow, module functions and module origins.
+Point me to the relevant sections, figures and equations.
+Use official code when available; otherwise explain preprocessing,
+the forward pass and training with clearly labeled teaching pseudocode.
+Answer directly in chat.
+```
+
+The Chinese trigger is `使用lingerskill给我讲解这篇论文`. In clients that support it, explicitly select the skill with `$lingerskill`.
+
+Ordinary requests to read or summarize a paper do not activate this skill. Follow-up questions about the same paper may continue an explicitly activated session; a new paper requires another explicit invocation. `agents/openai.yaml` sets `policy.allow_implicit_invocation: false`. Natural-language discovery depends on the client, so use `$lingerskill` or its skill picker when needed.
+
+## Reading experience
+
+- Explain the overall computation graph, what each module does, and how modules connect.
+- Trace raw data through preprocessing, normalization, patching or frequency transforms when present, batching, the model, predictions and loss. Explain tensor dimensions and the distinction between training and inference.
+- Place source pointers beside key explanations: sections, clearly identified PDF page numbering, figure or equation numbers, and code files/functions or line references when available.
+- Distinguish direct reuse, composition, adaptation, new mechanisms, and data or training contributions. Separate author claims, prior-work evidence and interpretation.
+- Read official code statically along the data-loading → forward → loss/training → prediction path. When code is absent or inaccessible, use teaching pseudocode and mark assumptions and unspecified details.
+
+The default output is a conversation, with no generated Markdown, text, YAML or state files. Running repositories, reproducing experiments and auditing implementation quality are not default tasks. Briefly explain discrepancies that affect understanding; expand into experiment review, research proposals or exports only when explicitly requested.
 
 ## Workflow
 
-| Stage | Focus |
-| --- | --- |
-| 00 | Sources, scope and evidence rules |
-| 01 | Problem definition and paper positioning |
-| 02 | Data pipeline, split protocol and future-information availability |
-| 03 | Model graph, equations and tensor-shape tracing |
-| 04 | Cross-check paper formulas against actual model `forward()` code |
-| 05 | Trace prior modules, adaptations, and novel mechanisms |
-| 06 | Audit evaluation protocols, baselines and ablations |
-| 07 | Derive falsifiable research hypotheses |
-| 08 | Create reusable paper/module/research-idea cards |
+Stages organize the reading process; they are not a mandatory sequence of answer headings.
 
-Evidence tags: `[P]` paper, `[C-static]` inspected code, `[C-run]` actually executed, `[R]` prior art, `[I]` inference, `[U]` unverified.
+| Stage | Focus | Scope |
+| --- | --- | --- |
+| 00 | Available paper, official code and supporting materials | As needed |
+| 01 | Research problem, inputs/outputs and architecture overview | Core |
+| 02 | Data processing, flow and tensor meaning | Core |
+| 03 | Module design, functions, equations and connections | Core |
+| 04 | Static code walkthrough or teaching pseudocode | Core |
+| 05 | Module origins and author contributions | Core |
+| 06 | Experiments, ablations and evaluation | Explicit request only |
+| 07 | Research hypotheses and proposed changes | Explicit request only |
+| 08 | Exported notes or cards | Explicit request only |
+
+Evidence tags, used where useful: `[P]` paper, `[C-static]` inspected code, `[C-run]` actually executed code, `[R]` prior work, `[I]` inference, `[U]` unconfirmed. Teaching pseudocode is not presented as the author's implementation, and static inspection is not reported as execution.
+
+See the [Chinese user guide](references/user-guide.zh-CN.md) and [prompt library](references/prompt-library.md).
 
 ## Installation
 
-This repository follows the [Agent Skills specification](https://agentskills.io/specification). Clone the repository into a Skills directory supported by your agent, keeping the directory named `time-series-paper-auditor` so `SKILL.md` is at its root.
+Install the complete project in your client's supported Skills directory, naming the installed folder `lingerskill`. Keep `SKILL.md` and its sibling resource directories together.
 
 ```bash
-git clone https://github.com/<YOUR-USERNAME>/time-series-paper-auditor.git
+git clone https://github.com/<YOUR-USERNAME>/time-series-paper-auditor.git lingerskill
 ```
 
-Replace `<YOUR-USERNAME>` with the repository owner after publication. Installation paths, automatic discovery and plugin ZIP requirements vary by client; not every ChatGPT account or workspace supports uploading custom skills.
-
-## Example prompt
-
-```text
-Use time-series-paper-auditor in deep mode to analyze this time-series
-forecasting paper. Start with stages 00–03: reconstruct the data pipeline,
-model graph, detailed tensor shapes, and information mixing dimensions.
-Cite paper/code evidence, distinguish verified facts from inferences,
-and preserve unresolved questions for later stages.
-```
-
-For detailed Chinese usage instructions, see [`references/user-guide.zh-CN.md`](references/user-guide.zh-CN.md). Prompt examples are in [`references/prompt-library.md`](references/prompt-library.md).
+Replace `<YOUR-USERNAME>` with the repository owner; this URL is an installation example. The repository or existing checkout may retain the name `time-series-paper-auditor`; the invocation name and new installation directory are `lingerskill`. Supported paths, discovery and package formats vary by client.
 
 ## Local validation
 
@@ -52,8 +69,8 @@ python scripts/validate_skill.py .
 python -m compileall -q scripts
 ```
 
-The optional PyTorch shape-hook helper in `scripts/trace_shapes.py` requires a trusted PyTorch environment and an already constructed model. Module hooks do not trace every functional tensor operation.
+The optional `scripts/trace_shapes.py` helper is not part of the default reading workflow. It requires an existing trusted PyTorch model environment and traces module boundaries, not every functional tensor operation.
 
 ## Contributing and license
 
-Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under [MIT](LICENSE). Before publication, ensure you have rights to license every included file. This repository intentionally does not redistribute papers, datasets, model weights or private research data.
+Contributions that improve explanations, source pointers and module-origin analysis are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Licensed under [MIT](LICENSE). This repository does not redistribute third-party papers, datasets, model weights or private research data.

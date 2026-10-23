@@ -1,26 +1,17 @@
-project: ""
-paper_id: ""
-mode: deep  # quick | deep | reproduce | stage
-stage: "00"
-inputs:
+# 仅在用户明确要求保存机器可读阅读进度时复制此模板。
+# 默认在聊天中讲解，不创建该文件；导出普通笔记也无需配套状态文件。
+skill: lingerskill
+paper_title: ""
+reading_focus: ""
+sources:
   paper: ""
+  paper_version: ""
   supplement: ""
-  repository: ""
-  commit: ""
-  config: ""
-  domain: ""
-  target: ""
-  prediction_origin: "t"
-  lookback_L: null
-  horizon_H: null
-  channels_C: null
-completed_stages: []
-evidence:
-  P: []
-  C_static: []
-  C_run: []
-  R: []
-  I: []
-  U: []
-critical_questions: []
-next_action: ""
+  official_repository: ""
+  code_version_if_known: ""
+covered_topics: []
+key_understanding: []
+source_locations: []
+teaching_assumptions: []
+unspecified_details: []
+next_reading_location: ""

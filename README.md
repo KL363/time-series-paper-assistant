@@ -1,80 +1,89 @@
-# Time-Series Paper Auditor（时序预测论文深度阅读 Skill）
+# lingerskill（论文架构与数据流精读 Skill）
 
 [English](README.en.md) | 中文
 
-**一个开源的 Agent Skill，用于系统性审读深度学习时序预测论文：从数据管线、模型计算图、Tensor Shape 和 PyTorch `forward()`，延伸到创新性溯源、实验可信度与可证伪研究假设。**
+**围绕作者的模型架构、数据处理和训练思路讲解深度学习时序预测论文，并把每项关键解释带回原文。**
 
-> 本项目不是论文摘要生成器。目标是使论文结论**可定位、计算过程可追踪、实验声称可审计**。
+你可以从整体计算图理解模块如何协作，再追踪一批数据经过归一化、分块、频域变换、核心模块、预测头与损失函数的过程。技能也会区分模块的直接复用、组合、改造、新机制和数据或训练方法贡献，帮助你理解作者具体做了什么。
 
-## 能做什么
+## 明确调用
 
-| 阶段 | 目标 | 主要产物 |
+提供论文 PDF 或可访问链接，然后发送：
+
+```text
+使用lingerskill给我讲解这篇论文。
+重点解释模型架构、数据管线、模块功能与来源，并给出原文章节、图表或公式位置。
+如果有官方代码，结合数据加载、forward 和训练过程讲；没有可访问的代码，就用教学伪代码解释。
+直接在聊天中回答。
+```
+
+支持显式选择技能的客户端，也可以使用：
+
+```text
+$lingerskill 给我讲解这篇论文。
+```
+
+**只有明确要求使用 `lingerskill` 时才启用。** 普通的“读一下论文”“总结这篇文章”不应触发。已启用后，对同一篇论文的继续追问可以承接；换一篇论文时需要重新明确调用。`agents/openai.yaml` 设置了 `policy.allow_implicit_invocation: false`；自然语言短语能否自动发现技能取决于客户端，必要时用 `$lingerskill` 或技能选择器显式选择。
+
+## 你会得到什么
+
+- **架构总图：** 输入、核心模块、连接关系、输出及各模块解决的问题。
+- **数据流解释：** 原始数据如何处理、如何形成 batch、张量含义与形状如何变化，以及训练和推理的差别。
+- **模块讲解：** 每个模块的输入、运算、输出、设计动机和与其他模块的关系。
+- **论文阅读定位：** 章节、PDF 页码口径、图号、公式号或可核对的短句；关键结论附近直接给出出处。
+- **来源与贡献判断：** 将作者声明、前作证据和解释性推断分开，区分科研机制创新与工程组合贡献；缺少来源证据时保留不确定性。
+- **代码或伪代码：** 有官方代码时静态阅读关键调用链；没有或无法访问时，用明确标为教学示意的伪代码解释预处理、前向传播、损失与参数更新。
+
+默认直接在聊天里解释，不创建 `.md`、`.txt`、`.yaml` 等笔记或状态文件，也不要求运行作者仓库、复现实验或审计实验规范。代码中影响理解的差异会简要说明；更深入的实验审查、研究方案和文件导出，只有你明确要求时才进入。
+
+## 工作流程
+
+阶段用于组织阅读，回答按你的问题展开，不机械输出全部阶段。
+
+| 阶段 | 内容 | 默认范围 |
 | --- | --- | --- |
-| 00 | 建立任务、来源和证据规则 | 来源清单与未解问题 |
-| 01 | 论文定位与问题定义 | 研究问题卡 |
-| 02 | 复盘数据管线与未来信息边界 | 数据流与泄漏风险表 |
-| 03 | 还原模型架构、公式与 Tensor Shape | 模块调用图与逐算子 Shape 表 |
-| 04 | 核验论文和实际代码 | 公式—代码映射、运行核验建议 |
-| 05 | 追踪模块来源及真正改进之处 | 创新性溯源矩阵 |
-| 06 | 审核实验设计与消融证据 | 评测和缺失对照表 |
-| 07 | 提炼可证伪的领域研究假设 | 最小实验方案 |
-| 08 | 沉淀可复用科研知识卡片 | Paper / Module / Research Idea Cards |
+| 00 | 确认论文、官方代码及可用材料 | 按需 |
+| 01 | 问题定义、输入输出与架构总图 | 核心 |
+| 02 | 数据处理、数据流与张量含义 | 核心 |
+| 03 | 模块设计、功能、公式与连接关系 | 核心 |
+| 04 | 官方代码静态讲解或教学伪代码 | 核心 |
+| 05 | 模块来源与作者贡献 | 核心 |
+| 06 | 实验、消融与评测讨论 | 用户明确要求时 |
+| 07 | 研究假设与改进方案 | 用户明确要求时 |
+| 08 | 笔记、卡片或其他文件导出 | 用户明确要求时 |
 
-**证据标签：** `[P]` 论文、`[C-static]` 代码静态确认、`[C-run]` 实际运行确认、`[R]` 前作、`[I]` 推断、`[U]` 未验证。AI 不应把推断当成事实，或把静态读代码说成已经运行验证。
+证据标签按需使用：`[P]` 论文、`[C-static]` 静态代码、`[C-run]` 实际运行、`[R]` 前作、`[I]` 推断、`[U]` 未确认。静态读代码不会写成已经运行验证，教学伪代码也不会被当成作者原始实现。
+
+详细用法见 [使用指南](references/user-guide.zh-CN.md)，可复制的指令见 [提示词库](references/prompt-library.md)。
 
 ## 安装
 
-本项目遵循 [Agent Skills 开放格式](https://agentskills.io/specification)。`SKILL.md` 是入口；`references/`、`assets/`、`scripts/` 是按需使用的补充资源。
-
-### Agent Skills 兼容客户端
-
-将整个项目目录克隆或复制到客户端支持的 Skills 搜索路径，**保留项目文件夹名 `time-series-paper-auditor`**，使 `SKILL.md` 位于其根目录：
+将完整项目放入客户端支持的 Skills 搜索路径，安装目录名使用 `lingerskill`，并保留 `SKILL.md` 与同级资源的相对位置：
 
 ```bash
-git clone https://github.com/<YOUR-USERNAME>/time-series-paper-auditor.git
+git clone https://github.com/<YOUR-USERNAME>/time-series-paper-auditor.git lingerskill
 ```
 
-> 将 `<YOUR-USERNAME>` 换成仓库实际所有者。本仓库公布前，上面的地址仅是安装示例，并非真实链接。不同客户端的自动发现路径和调用方式可能不同，请参考该客户端当前文档。
-
-### ChatGPT / 插件式分发
-
-不同产品对 Skill 和 Plugin 包的安装格式要求可能不同；GitHub 项目源代码**不是**所有插件上传界面可直接使用的 ZIP。若使用针对插件格式打包的 ZIP，请从本项目的 Releases 下载相应发布附件，并阅读对应版本说明。当前是否支持自定义 Skill / Plugin 上传取决于产品、账号及工作区权限。
-
-## 开始使用
-
-上传论文 PDF，尽可能提供附录、官方仓库及具体 commit/tag，然后告诉 AI：
-
-```text
-请使用 time-series-paper-auditor，以 deep 模式分析这篇时序预测论文。
-优先分析：
-1. 原始数据到模型输入的完整管线；
-2. 每个模块的真实计算方式与 Tensor Shape；
-3. 论文公式与 PyTorch forward 的对应关系；
-4. 作者复用、改造或新增了什么机制；
-5. 实验是否支持创新声明。
-先执行阶段 00–03，保留证据及尚未解决的问题，不要一次输出全部阶段。
-```
-
-可选模式：`quick`（初筛）、`deep`（默认精读）、`reproduce`（复现与创新）、`stage`（仅指定阶段）。详细用法见 [`references/user-guide.zh-CN.md`](references/user-guide.zh-CN.md)，可复制的指令见 [`references/prompt-library.md`](references/prompt-library.md)。
+将 `<YOUR-USERNAME>` 替换为实际仓库所有者；上面是安装示例。仓库或现有 checkout 仍可以名为 `time-series-paper-auditor`，技能调用名和新安装目录名为 `lingerskill`。不同客户端的安装路径、发现方式和打包格式可能不同，请按所用客户端的说明安装。
 
 ## 项目结构
 
 ```text
-time-series-paper-auditor/
-├── SKILL.md                    # Agent Skills 入口
-├── references/                 # 各阶段说明、指令库、使用指南
-├── assets/                     # 论文卡、模块卡、研究假设、会话状态模板
+lingerskill/
+├── SKILL.md                    # 入口、显式触发与讲解规则
+├── agents/openai.yaml          # 禁止隐式调用的客户端配置
+├── references/                 # 按需加载的阶段说明、提示词与指南
+├── assets/                     # 仅在用户要求导出时使用的模板
 ├── scripts/
-│   ├── trace_shapes.py         # 可选：PyTorch 叶子模块 Shape Hooks
-│   └── validate_skill.py       # 本项目的轻量结构检查
-├── .github/workflows/validate.yml
+│   ├── trace_shapes.py         # 可选的 PyTorch Shape Hook
+│   └── validate_skill.py       # 技能结构检查
 ├── README.md / README.en.md
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
 └── LICENSE
 ```
 
-## 本地验证
+## 本地验证与贡献
 
 ```bash
 python -m pip install pyyaml
@@ -82,32 +91,6 @@ python scripts/validate_skill.py .
 python -m compileall -q scripts
 ```
 
-Shape Hook 用法：
+`trace_shapes.py` 是可选工具，默认读论文不使用；只有明确需要运行形状追踪时才使用已有的可信模型环境。它记录 Module 边界，不覆盖每一次函数式张量操作。
 
-```python
-from scripts.trace_shapes import attach_shape_hooks
-
-handles = attach_shape_hooks(model)  # model 是你已经安全加载的 PyTorch 模型
-try:
-    prediction = model(example_input)
-finally:
-    for h in handles:
-        h.remove()
-```
-
-Shape Hook 仅记录 Module 边界；`permute`、`reshape` 等函数式张量操作需要额外断言/日志。不要未经检查直接运行第三方仓库依赖或脚本。
-
-## 局限性和科研规范
-
-- 没有实际阅读论文或代码，就不能声称完成相应的核验。
-- 结构分析≠运行复现；统计相关性≠模块工作机制的因果证明。
-- 只有相似模块名称，不能证明论文抄袭；创新性需要核实参考文献和具体机制。
-- 此仓库不包含任何第三方论文 PDF、数据集、模型权重或私人研究材料。
-
-## 参与贡献
-
-欢迎提交 Issue / Pull Request，尤其欢迎增加时序预测特有的分析检查项、修正张量分析错误和提供**不包含第三方受限材料**的可复现示例。贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
-
-## 许可证
-
-[MIT License](LICENSE)。在你自己的 GitHub 账号发布前，请确认你有权对其中全部文件采用该许可证；如果希望改用 Apache-2.0 或其他协议，请在发布前统一修改 `LICENSE` 和 `SKILL.md` 的 `license` 字段。
+欢迎改进数据流解释、原文定位、模块来源辨析和中英文示例，见 [贡献说明](CONTRIBUTING.md)。本仓库不分发第三方论文、数据集、权重或私人研究材料。许可证：[MIT](LICENSE)。
