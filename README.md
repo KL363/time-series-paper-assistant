@@ -61,7 +61,7 @@ $lingerskill 给我讲解这篇论文。
 将完整项目放入客户端支持的 Skills 搜索路径，安装目录名使用 `lingerskill`，并保留 `SKILL.md` 与同级资源的相对位置：
 
 ```bash
-git clone https://github.com/<YOUR-USERNAME>/time-series-paper-auditor.git lingerskill
+git clone https://github.com/KL363/time-series-paper-auditor.git lingerskill
 ```
 
 将 `<YOUR-USERNAME>` 替换为实际仓库所有者；上面是安装示例。仓库或现有 checkout 仍可以名为 `time-series-paper-auditor`，技能调用名和新安装目录名为 `lingerskill`。不同客户端的安装路径、发现方式和打包格式可能不同，请按所用客户端的说明安装。
