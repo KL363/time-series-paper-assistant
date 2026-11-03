@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0] - 2026-11-03
+
+- Made short, user-paced turns the default: start with an architecture overview, then explain one topic per reply.
+- Added a default total reply budget covering prose, code, tables, formulas and references.
+- Defined continue, skip and topic-jump behavior without repeated introductions or state files.
+- Split code walkthroughs and teaching pseudocode into complete small units while preserving paper references.
+- Updated the entrypoint, supporting guidance, bilingual documentation and default prompt to prevent full-paper requests from producing one oversized reply.
+
 ## [2.0.0] - 2026-10-23
 
 - Renamed the skill invocation and installation directory to `lingerskill`; the repository name may remain `time-series-paper-auditor`.
