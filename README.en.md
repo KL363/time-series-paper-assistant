@@ -14,7 +14,7 @@ Focus on its architecture, data flow, module functions and module origins.
 Point me to the relevant sections, figures and equations.
 Use official code when available; otherwise explain preprocessing,
 the forward pass and training with clearly labeled teaching pseudocode.
-Answer directly in chat.
+Answer in short turns. Start with a brief architecture overview and wait for me to say continue.
 ```
 
 The Chinese trigger is `使用lingerskill给我讲解这篇论文`. In clients that support it, explicitly select the skill with `$lingerskill`.
@@ -30,6 +30,14 @@ Ordinary requests to read or summarize a paper do not activate this skill. Follo
 - Read official code statically along the data-loading → forward → loss/training → prediction path. When code is absent or inaccessible, use teaching pseudocode and mark assumptions and unspecified details.
 
 The default output is a conversation, with no generated Markdown, text, YAML or state files. Running repositories, reproducing experiments and auditing implementation quality are not default tasks. Briefly explain discrepancies that affect understanding; expand into experiment review, research proposals or exports only when explicitly requested.
+
+## Short turns by default
+
+The first reply gives a brief architecture overview (normally 400–700 Chinese characters). Later replies cover one topic each, normally 600–1000 Chinese characters of prose, with a default ceiling of about 1800 visible characters including code, tables, formulas and references. Other languages use the same total character budget.
+
+Say “continue” for the next unexplained part, or name a module to jump to it. Detailed or complete explanations still span multiple turns; asking for everything in one message produces a concise overview unless you explicitly request a different length. Code stays in complete small blocks, and source locations remain next to the explanation. No note files are created automatically.
+
+After updating, sync the installed copy and invoke the skill again. Existing long messages are unchanged.
 
 ## Workflow
 
