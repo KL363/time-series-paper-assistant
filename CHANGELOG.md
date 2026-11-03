@@ -29,4 +29,4 @@
 ## [1.0.0] - 2026-10-23
 
 - Initial Agent Skill: stages 00–08 for deep-learning time-series paper analysis.
-- Evidence rules, prompt library, note templates and optional PyTorch shape tracing.
+- Evidence rules, prompt library, note templates and optional PyTorch shape tracing..
