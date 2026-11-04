@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.0] - 2026-11-05
+
+- Enforced one stage or core module per reply, progressing only on an explicit user request.
+- Ordered stage explanations as motivation, computation, equations, tensor shapes and implementation, with source-backed pseudocode when needed.
+- Required stage endings to give key conclusions and genuine open questions, then stop; follow-up questions stay within the current stage.
+- Allowed an explicit one-shot complete analysis to bypass stage waits and the default reply budget without forcing a condensed summary.
+- Synchronized supporting guidance, examples and the default prompt while preserving paper citations and chat-first output.
+
 ## [2.1.0] - 2026-11-03
 
 - Made short, user-paced turns the default: start with an architecture overview, then explain one topic per reply.
