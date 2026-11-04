@@ -33,9 +33,13 @@ The default output is a conversation, with no generated Markdown, text, YAML or 
 
 ## Short turns by default
 
-The first reply gives a brief architecture overview (normally 400–700 Chinese characters). Later replies cover one topic each, normally 600–1000 Chinese characters of prose, with a default ceiling of about 1800 visible characters including code, tables, formulas and references. Other languages use the same total character budget.
+Unless a starting point is specified, the first reply gives a brief architecture overview (normally 400–700 Chinese characters). Later replies explore only one stage or core module each, normally 600–1000 Chinese characters of prose, with a default ceiling of about 1800 visible characters including code, tables, formulas, conclusions, open questions and references. Other languages use the same total character budget.
 
-Say “continue” for the next unexplained part, or name a module to jump to it. Detailed or complete explanations still span multiple turns; asking for everything in one message produces a concise overview unless you explicitly request a different length. Code stays in complete small blocks, and source locations remain next to the explanation. No note files are created automatically.
+Each new stage follows **research motivation → computational principle → mathematical formulas → Tensor Shape → implementation**, then ends with **key conclusions and open questions** and stops. Inapplicable formulas, shapes or code are briefly identified rather than invented. Open questions concern understanding or missing source details; if there are none, say so. They do not become a mandatory criticism or experiment checklist.
+
+Advance only when the user explicitly asks to continue or jump. A follow-up about the current formula, module or code stays in the current stage and addresses that question without mechanically repeating all five parts; “thanks” or “understood” does not advance. Detailed or complete explanations still span multiple turns unless the user explicitly requests a **complete analysis in one response** or **no stages**. That request lifts the stage waiting and default length budget for the specified scope, while preserving any explicit length limit; it does not force a condensed overview. Ordinary follow-ups then return to the default interactive rules.
+
+Code stays in complete blocks, and source locations remain next to the explanation. No note files are created automatically.
 
 After updating, sync the installed copy and invoke the skill again. Existing long messages are unchanged.
 
